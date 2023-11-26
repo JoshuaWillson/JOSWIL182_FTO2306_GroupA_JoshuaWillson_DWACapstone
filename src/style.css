@@ -48,11 +48,11 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1rem;
     position: sticky;
     top: 0;
     background-color: var(--steel-blue);
     border-bottom: 1px solid var(--grey);
+    z-index: 1;
 }
 
 .header--img {
@@ -64,7 +64,6 @@ button:disabled {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 3rem;
 }
 
 .preview--list {
@@ -137,8 +136,6 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    margin-bottom: -2.3rem;
-    margin-top: -1rem;
     background-color: var(--ultra-violet);
     margin: 0;
     margin-top: 0.5rem;
@@ -215,8 +212,51 @@ button:disabled {
 .show--back--button {
     margin-bottom: 1rem;
     margin-left: 1rem;
+    margin-top: 1rem;
     align-self: start;
     width: 5rem;
+    height: 2rem;
+    font-size: larger;
+}
+
+/* PreviewSlideShow */
+.previewslideshow--container {
+    display: flex;
+    align-items: center;
+}
+
+.previewslideshow--slideshow {
+    margin: 0 auto;
+    overflow: hidden;
+    max-width: 500px;
+}
+
+.previewslideshow--slider {
+    white-space: nowrap;
+    transition: ease 1000ms;
+}
+
+.previewslideshow--slide {
+    display: inline-block;
+    height: 400px;
+    width: 100%;
+    border-radius: 40px;
+}
+
+.previewslideshow--slide {
+    cursor: pointer;
+}
+
+.previewslideshow--back--button {
+    margin-right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    font-size: larger;
+}
+
+.previewslideshow--forward--button {
+    margin-left: 1rem;
+    width: 2rem;
     height: 2rem;
     font-size: larger;
 }

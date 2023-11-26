@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { genreArray } from "../genre-data";
 
 export default function Show(props) {
-    const {id, genres, setShow} = props
+    const {id, genres, setShow} = props;
     const [showData, setshowData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [genreData, setGenreData] = useState([]);

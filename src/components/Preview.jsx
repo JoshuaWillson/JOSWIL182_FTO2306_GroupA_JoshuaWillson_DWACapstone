@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { genreArray } from "../genre-data";
 import Show from "./Show"
+import PreviewSlideShow from "./PreviewSlideShow";
 
 export default function Preview(props) {
     const {} = props;
@@ -96,6 +97,9 @@ export default function Preview(props) {
                 {isLoading 
                 ? <h2 className="loading">Loading...</h2> 
                 : <div className="preview--container">
+                    <h2>Suggested</h2>
+                    <PreviewSlideShow previewData={previewData} setShow={setShow} />
+                    <h2>Featured</h2>
                     <div className="preview--list">
                         <PreviewList />
                     </div>
