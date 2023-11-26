@@ -1,4 +1,4 @@
-export const genres = [
+export const genreArray = [
     {id: 1, title: "Personal Growth"},
     {id: 2, title: "True Crime and Investigative Journalism"},
     {id: 3, title: "History"},
