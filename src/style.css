@@ -217,7 +217,13 @@ button:disabled {
     width: 5rem;
     height: 2rem;
     font-size: larger;
+    position: sticky;
+    top: 6rem;
 }
+
+/* Season */
+
+/* Episode */
 
 /* PreviewSlideShow */
 .previewslideshow--container {
@@ -260,3 +266,12 @@ button:disabled {
     height: 2rem;
     font-size: larger;
 }
+
+/* AudioPlayer */
+.audioplayer--container {
+    position: fixed;
+    bottom: 5rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+

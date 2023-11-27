@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { genreArray } from "../genre-data";
-import Show from "./Show"
+import Show from "./Show";
 import PreviewSlideShow from "./PreviewSlideShow";
 
 export default function Preview(props) {
-    const {} = props;
+    const {setPlayingPodcast} = props;
     const [previewData, setPreviewData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [endSlice, setEndSlice] = useState({value: 8, stepAmount: 8});
@@ -109,7 +109,7 @@ export default function Preview(props) {
                   </button>
                   </div>}
             </div>
-            : <Show id={show.id} genres={show.genres} setShow={setShow} />}
+            : <Show id={show.id} genres={show.genres} setShow={setShow} setPlayingPodcast={setPlayingPodcast} />}
         </div>
     )
 }

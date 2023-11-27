@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { genreArray } from "../genre-data";
+import Season from "./Season";
 
 export default function Show(props) {
-    const {id, genres, setShow} = props;
+    const {id, genres, setShow, setPlayingPodcast} = props;
     const [showData, setshowData] = useState({});
+    const [showSeasonsData, setShowSeasonsData] = useState([])
     const [isLoading, setIsLoading] = useState(false);
-    const [genreData, setGenreData] = useState([]);
 
     useEffect(() => {
         setIsLoading(true)
@@ -13,7 +14,7 @@ export default function Show(props) {
         .then(response => response.json())
         .then(data => {
             setshowData(data)
-            setGenreData(data.genres)
+            setShowSeasonsData(data.seasons)
             setIsLoading(false)
         })
     }, [])
@@ -35,6 +36,21 @@ export default function Show(props) {
         })
     }
 
+    const ShowUpdated = (props) => {
+        const {updated} = props
+        const date = new Date(updated)
+        let month
+        const dayOfMonth = date.getDate() > 9 ? date.getDate().toString() : `0${date.getDate()}`
+        switch (date.getMonth() + 1) { case 1: month = "Jan"; break; case 2: month = "Feb"; break; case 3: month = "Mar"; break;
+        case 4: month = "Apr"; break; case 5: month = "May"; break; case 6:month = "Jun"; break; case 7: month = "Jul"; break;
+        case 8: month = "Aug"; break; case 9: month = "Sep"; break; case 10: month = "Oct"; break; case 11: month = "Nov"; break;
+        case 12: month = "Dec"; break } 
+        const year = date.getFullYear()
+
+        return <h4 className="preview--updated">{`Updated: ${dayOfMonth} ${month} ${year}`}</h4>
+
+    }
+
     return (
         <div>
             {isLoading
@@ -44,11 +60,11 @@ export default function Show(props) {
                 <img className="show--img" src={showData.image} alt="Show Image" />
                 <h1>{showData.title}</h1>
                 <h2>{showData.description}</h2>
-                <h3>Genres:</h3>
                 <ShowGenres />
+                <ShowUpdated updated={showData.updated} />
+                <h2>Seasons: {showSeasonsData.length}</h2>
+                <Season showSeasonsData={showSeasonsData} setPlayingPodcast={setPlayingPodcast} />
               </div>}
         </div>
-        
-
     )
 }
