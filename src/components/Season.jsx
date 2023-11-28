@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Episode from "./Episode";
 
 export default function Season(props) {
-    const {showSeasonsData, setPlayingPodcast, playingPodcast, setPodcastsPlayed} = props 
+    const {showSeasonsData, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, showTitle} = props 
     const [selectedSeason, setSelectedSeason] = useState(1)
     const [displaySeason, setDisplaySeason] = useState()
 
@@ -17,10 +17,18 @@ export default function Season(props) {
             return <div key={season}>
                         <h3 className="season--title">{title} ({episodes.length} Episodes)</h3>
                         <img src={image} alt="Season Image" width={100} />
-                        <Episode episodes={episodes} image={image} setPlayingPodcast={setPlayingPodcast} playingPodcast={playingPodcast} setPodcastsPlayed={setPodcastsPlayed} />
+                        <Episode episodes={episodes} 
+                            image={image}
+                            setPlayingPodcast={setPlayingPodcast} 
+                            playingPodcast={playingPodcast} 
+                            setPodcastsPlayed={setPodcastsPlayed}
+                            setFavourites={setFavourites}
+                            favourites={favourites}
+                            showTitle={showTitle}
+                        />
                   </div>
         })[selectedSeason - 1])
-    }, [selectedSeason, playingPodcast])
+    }, [selectedSeason, playingPodcast, favourites])
 
     const handleSeasonSelectChange = (event) => {
         const {value} = event.target
