@@ -270,8 +270,11 @@ button:disabled {
 /* AudioPlayer */
 .audioplayer--container {
     position: fixed;
-    bottom: 5rem;
+    bottom: 1px;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: #4A7B9D;
+    border-radius: 10px;
+    padding: 1rem;
 }
 
