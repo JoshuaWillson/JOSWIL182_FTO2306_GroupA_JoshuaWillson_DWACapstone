@@ -70,6 +70,7 @@ export default function Show(props) {
                         setFavourites={setFavourites}
                         favourites={favourites}
                         showTitle={showData.title}
+                        showUpdated={showData.updated}
                 />
               </div>}
         </div>

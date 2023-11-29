@@ -21,7 +21,8 @@ export default function Preview(props) {
         })
     }, [])
 
-    const showButtonClickHandler = (id, genres) => {
+    const showButtonClickHandler = (event, id, genres) => {
+        if(event.target.className === "preview--genre") return null
         setShow(prevShow => {
             return {
                 ...prevShow,
@@ -32,11 +33,15 @@ export default function Preview(props) {
         })
     }
 
+    const genreButtonHandler = (genre) => {
+        console.log(genre)
+    }
+
     const PreviewGenres = (props) => {
         const {genres} = props
         return genres.map((num) => {
             return genreArray.map(({id, title}) => {
-                return num === id && <h6 className="preview--genre" key={id}>{title}</h6>
+                return num === id && <h6 onClick={() => genreButtonHandler(title)} className="preview--genre" key={id}>{title}</h6>
             })
         })
     }
@@ -58,7 +63,7 @@ export default function Preview(props) {
 
     const PreviewList = () => [
         previewData.slice(0, endSlice.value).map(({title, image, id, description, seasons, genres, updated}) => {
-            return <div key={id} id={id} className="preview--item" onClick={() => showButtonClickHandler(id, genres)}>
+            return <div key={id} id={id} className="preview--item" onClick={(event) => showButtonClickHandler(event, id, genres)}>
                             <div className="preview--seasons--updated">
                                 <h6 className="preview--seasons">Seasons: {seasons}</h6>
                                 <PreviewUpdated updated={updated} />

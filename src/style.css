@@ -132,6 +132,10 @@ button:disabled {
     padding: 5px;
 }
 
+.preview--genre:hover {
+    outline: 1px solid var(--grey);
+}
+
 .preview--seasons--updated {
     display: flex;
     align-items: center;

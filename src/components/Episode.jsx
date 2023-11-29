@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export default function Episode(props) {
-    const {episodes, image, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, showTitle} = props
+    const {episodes, image, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, showTitle, season, seasonTitle, showUpdated} = props
 
     const playButtonHandler = (title, file) => {
         setPlayingPodcast(prevPlayingPodcast => {
@@ -37,6 +37,11 @@ export default function Episode(props) {
         })
     }
 
+    const getDateTime = () => {
+        const date = new Date()
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+    }
+
     const favouriteButtonHandler = (title, description, episode, file) => {
         if(favourites.episodes.some((item) => item.title === title)) {
             setFavourites(prevFavourites => {
@@ -58,9 +63,12 @@ export default function Episode(props) {
                             description: description,
                             episode: episode,
                             file: file,
-                            date: new Date(),
+                            date: getDateTime(),
                             showTitle: showTitle,
-                            image: image
+                            image: image,
+                            season: season,
+                            seasonTitle: seasonTitle,
+                            showUpdated: showUpdated
                         }
                     ]
                 }
