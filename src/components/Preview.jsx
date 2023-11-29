@@ -9,7 +9,10 @@ export default function Preview(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [endSlice, setEndSlice] = useState({value: 8, stepAmount: 8});
     const [show, setShow] = useState({display: false, id: "", genres: []});
-    const isDisabled = previewData.slice(0, endSlice.value).length === previewData.length;
+    const [selectedFilter, setSelectedFilter] = useState("Default")
+    const [titleSearch, setTitleSearch] = useState("")
+    const [filteredGenres, setFilteredGenres] = useState([])
+    const [filteredPreviewData, setFilteredPreviewData] = useState([])
 
     useEffect(() => {
         setIsLoading(true)
@@ -20,6 +23,58 @@ export default function Preview(props) {
             setIsLoading(false)
         })
     }, [])
+    
+    useEffect(() => {
+        const filterData = [...previewData]
+
+        if(selectedFilter === "Default") {
+            setFilteredPreviewData(filterData)
+        }else if(selectedFilter === "Title (A-Z)") {
+            const sortedPreview = filterData.sort((a, b) => {
+                return a.title.localeCompare(b.title)
+        })
+        setFilteredPreviewData(sortedPreview)
+        }else if(selectedFilter === "Title (Z-A)") {
+            const sortedPreview = filterData.sort((a, b) => {
+                return b.title.localeCompare(a.title)
+            })
+            setFilteredPreviewData(sortedPreview)
+        }else if(selectedFilter === "Date Updated (Ascending)") {
+            const sortedPreview = filterData.sort((a, b) => {
+                const date1 = new Date(a.updated)
+                const date2 = new Date(b.updated)
+                return date1 - date2
+            })
+            setFilteredPreviewData(sortedPreview)
+        }else if(selectedFilter === "Date Updated (Descending)") {
+            const sortedPreview = filterData.sort((a, b) => {
+                const date1 = new Date(a.updated)
+                const date2 = new Date(b.updated)
+                return date2 - date1
+            })
+            setFilteredPreviewData(sortedPreview)
+        }
+
+        if(filteredGenres.length > 0) {
+            setFilteredPreviewData(filterData.filter((item) => {
+                return item.genres.map((num) => {
+                    return genreArray.map(({id, title}) => {
+                        return num === id && title
+                    })
+                }).flat().map((genre) => {
+                    return filteredGenres.map((item) => {
+                        return item === genre
+                    })
+                }).flat().flat().some((item) => item === true)
+            }))
+        }
+
+        if(titleSearch.trim() !== "") {
+            setFilteredPreviewData(filterData.filter((item) => {
+                return item.title.trim().toLocaleLowerCase().includes(titleSearch.trim().toLocaleLowerCase())
+            }))
+        }
+    }, [titleSearch, previewData, selectedFilter, filteredGenres])
 
     const showButtonClickHandler = (event, id, genres) => {
         if(event.target.className === "preview--genre") return null
@@ -34,7 +89,16 @@ export default function Preview(props) {
     }
 
     const genreButtonHandler = (genre) => {
-        console.log(genre)
+        filteredGenres.some((item) => {
+            return item === genre
+        }) 
+        ? null
+        : setFilteredGenres(prevFilteredGenres => {
+                return [
+                    ...prevFilteredGenres,
+                    genre
+                ]
+          })
     }
 
     const PreviewGenres = (props) => {
@@ -62,7 +126,7 @@ export default function Preview(props) {
     }
 
     const PreviewList = () => [
-        previewData.slice(0, endSlice.value).map(({title, image, id, description, seasons, genres, updated}) => {
+        filteredPreviewData.slice(0, endSlice.value).map(({title, image, id, description, seasons, genres, updated}) => {
             return <div key={id} id={id} className="preview--item" onClick={(event) => showButtonClickHandler(event, id, genres)}>
                             <div className="preview--seasons--updated">
                                 <h6 className="preview--seasons">Seasons: {seasons}</h6>
@@ -90,9 +154,19 @@ export default function Preview(props) {
     }
 
     const calcRemainingItems = () => {
-        return previewData.slice(0, endSlice.value).length === previewData.length 
+        return filteredPreviewData.slice(0, endSlice.value).length === filteredPreviewData.length 
         ? 0 
-        : previewData.length - endSlice.value
+        : filteredPreviewData.length - endSlice.value
+    }
+
+    const handleFilterSelectChange = (event) => {
+        const {value} = event.target
+        setSelectedFilter(value)
+    }
+
+    const handleTitleSearchChange = (event) => {
+        const {value} = event.target
+        setTitleSearch(value)
     }
 
     return (
@@ -102,13 +176,37 @@ export default function Preview(props) {
                 {isLoading 
                 ? <h2 className="loading">Loading...</h2> 
                 : <div className="preview--container">
-                    <h2>Suggested</h2>
+                    <h2>You might be interested in...</h2>
                     <PreviewSlideShow previewData={previewData} setShow={setShow} />
                     <h2>Featured</h2>
+                    <div>
+                        <label htmlFor="filterPreview">Sort By: </label>
+                        <select id='filterPreview' value={selectedFilter} onChange={handleFilterSelectChange}>
+                            <option value="Default">Default</option>
+                            <option value="Title (A-Z)">Title (A-Z)</option>
+                            <option value="Title (Z-A)">Title (Z-A)</option>
+                            <option value="Date Updated (Ascending)">Date Updated (Ascending)</option>
+                            <option value="Date Updated (Descending)">Date Updated (Descending)</option>
+                        </select>
+                        <input type="text" placeholder="Search Title" value={titleSearch} onChange={handleTitleSearchChange} />
+                        {filteredGenres.length > 0 && <div>
+                                                            {filteredGenres.map((genre) => {
+                                                                return <h6 onClick={() => {
+                                                                    setFilteredGenres(prevFilteredGenres => {
+                                                                        return [
+                                                                            ...prevFilteredGenres.filter((item) => {
+                                                                                return item !== genre
+                                                                            })
+                                                                        ]
+                                                                    })
+                                                                }} className="preview--genre" key={genre}>{genre} (Clear)</h6>
+                                                            })}
+                                                      </div>}
+                    </div>
                     <div className="preview--list">
                         <PreviewList />
                     </div>
-                  <button disabled={isDisabled} 
+                  <button disabled={filteredPreviewData.slice(0, endSlice.value).length === filteredPreviewData.length}
                           className="preview--more--button" 
                           onClick={moreButtonClickHandler}>Show more ({calcRemainingItems()})
                   </button>

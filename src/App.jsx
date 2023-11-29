@@ -18,7 +18,7 @@ export default function App() {
   const [podcastsPlayed, setPodcastsPlayed] = useState([])
   const [filteredPodcastsPlayed, setFilteredPodcastsPlayed] = useState([])
   const [favourites, setFavourites] = useState({
-    displayFavourites: false,
+    isDisplaying: false,
     episodes: []
   })
 
@@ -33,7 +33,7 @@ export default function App() {
     <>
       <div>
         <Header setFavourites={setFavourites} />
-        {favourites.displayFavourites 
+        {favourites.isDisplaying 
         ? <Favourites favourites={favourites} 
                       setFavourites={setFavourites} 
                       playingPodcast={playingPodcast} 

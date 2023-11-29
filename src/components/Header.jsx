@@ -7,7 +7,7 @@ export default function Header(props) {
         setFavourites(prevFavourites => {
             return {
                 ...prevFavourites,
-                displayFavourites: nav === 'home' ? false : true
+                isDisplaying: nav === 'home' ? false : true
             }
         })
     }

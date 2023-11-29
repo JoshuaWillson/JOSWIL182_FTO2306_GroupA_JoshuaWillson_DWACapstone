@@ -6,31 +6,35 @@ export default function Favourites(props) {
     const [selectedFilter, setSelectedFilter] = useState("Default")
 
     useEffect(() => {
-        const favouritesArray = [...favourites.episodes]
-        if(selectedFilter === "Default") {
-            const defaultFavourites = favourites.episodes.sort((a, b) => {
-                return a.episode - b.episode
+        const orderedFavourites = [...(Object.values(Object.groupBy(favourites.episodes, ({ showTitle }) => showTitle)).map((show) => {
+            return Object.values(Object.groupBy(show, ({ seasonTitle }) => seasonTitle)).map((season) => {
+                return season.sort((a, b) => {
+                    return a.episode - b.episode
+                })
             })
-            setFilteredFavourites(defaultFavourites)
-        }else if(selectedFilter === "Show Titles (A-Z)") {
-            const sortedFavourites = favouritesArray.sort((a, b) => {
+        })).flat().flat()]
+
+        if(selectedFilter === "Default") {
+            setFilteredFavourites(orderedFavourites)
+        }else if(selectedFilter === "Show Title (A-Z)") {
+            const sortedFavourites = orderedFavourites.sort((a, b) => {
                 return a.showTitle.localeCompare(b.showTitle)
             })
             setFilteredFavourites(sortedFavourites)
-        }else if(selectedFilter === "Show Titles (Z-A)") {
-            const sortedFavourites = favouritesArray.sort((a, b) => {
+        }else if(selectedFilter === "Show Title (Z-A)") {
+            const sortedFavourites = orderedFavourites.sort((a, b) => {
                 return b.showTitle.localeCompare(a.showTitle)
             })
             setFilteredFavourites(sortedFavourites)
         }else if(selectedFilter === "Date Updated (Ascending)") {
-            const sortedFavourites = favouritesArray.sort((a, b) => {
+            const sortedFavourites = orderedFavourites.sort((a, b) => {
                 const date1 = new Date(a.showUpdated)
                 const date2 = new Date(b.showUpdated)
                 return date1 - date2
             })
             setFilteredFavourites(sortedFavourites)
         }else if(selectedFilter === "Date Updated (Descending)") {
-            const sortedFavourites = favouritesArray.sort((a, b) => {
+            const sortedFavourites = orderedFavourites.sort((a, b) => {
                 const date1 = new Date(a.showUpdated)
                 const date2 = new Date(b.showUpdated)
                 return date2 - date1
@@ -87,13 +91,14 @@ export default function Favourites(props) {
     }
 
     const FavouritesList = () => [
-        Object.entries(Object.groupBy(filteredFavourites, ({ showTitle }) => showTitle)).map(([showTitle, episode]) => {
+        Object.entries(Object.groupBy(filteredFavourites, ({ showTitle }) => showTitle)).map(([showTitle, season]) => {
             return <div key={showTitle}>
                         <h2>{showTitle}</h2>
-                        {Object.entries(Object.groupBy(episode, ({ seasonTitle }) => seasonTitle)).map(([seasonTitle, item]) => {
+                        {Object.entries(Object.groupBy(season, ({ seasonTitle }) => seasonTitle)).map(([seasonTitle, episode], index) => {
                             return <div key={seasonTitle}>
                                         <h3>{seasonTitle}</h3>
-                                        {item.map(({title, description, episode, file, image, date}) => {
+                                        <img src={episode[index].image} alt="Season Image" width={50} />
+                                        {episode.map(({title, description, episode, file, image, date}) => {
                                             return <div key={title}>
                                                         <h4>Episode {episode}: {title}</h4>
                                                         <h6>Added: {date}</h6>
@@ -108,9 +113,18 @@ export default function Favourites(props) {
         })
     ]
 
-    const handleSeasonSelectChange = (event) => {
+    const handleFilterSelectChange = (event) => {
         const {value} = event.target
         setSelectedFilter(value)
+    }
+
+    const backToHomeButtonHandler = () => {
+        setFavourites(prevFavourites => {
+            return {
+                ...prevFavourites,
+                isDisplaying: false
+            }
+        })
     }
 
     return (
@@ -118,17 +132,21 @@ export default function Favourites(props) {
             {favourites.episodes.length > 0 
             ? <div>
                 <h1>Favourites</h1>
-                <label htmlFor="filter">Sort By: </label>
-                <select id='filter' value={selectedFilter} onChange={handleSeasonSelectChange}>
+                <label htmlFor="filterFavourites">Sort By: </label>
+                <select id='filterFavourites' value={selectedFilter} onChange={handleFilterSelectChange}>
                     <option value="Default">Default</option>
-                    <option value="Show Titles (A-Z)">Show Titles (A-Z)</option>
-                    <option value="Show Titles (Z-A)">Show Titles (Z-A)</option>
+                    <option value="Show Title (A-Z)">Show Title (A-Z)</option>
+                    <option value="Show Title (Z-A)">Show Title (Z-A)</option>
                     <option value="Date Updated (Ascending)">Date Updated (Ascending)</option>
                     <option value="Date Updated (Descending)">Date Updated (Descending)</option>
                 </select>
                 <FavouritesList /> 
               </div> 
-            : <h1>No favourites at the moment...</h1>}
+            : <div>
+                <h1>No favourites at the moment...</h1>
+                <button onClick={backToHomeButtonHandler}>Back to home</button>
+              </div>
+            }
         </div>
     )
 }
