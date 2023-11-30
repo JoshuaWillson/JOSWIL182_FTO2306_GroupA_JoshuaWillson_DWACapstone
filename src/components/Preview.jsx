@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { genreArray } from "../genre-data";
 import Show from "./Show";
 import PreviewSlideShow from "./PreviewSlideShow";
+import Fuse from 'fuse.js'
 
 export default function Preview(props) {
     const {setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites} = props;
@@ -13,6 +14,14 @@ export default function Preview(props) {
     const [titleSearch, setTitleSearch] = useState("")
     const [filteredGenres, setFilteredGenres] = useState([])
     const [filteredPreviewData, setFilteredPreviewData] = useState([])
+
+    const options = {
+        keys: ['title']
+      }
+      
+    const fuse = new Fuse(filteredPreviewData, options)
+      
+    const result = fuse.search(titleSearch)
 
     useEffect(() => {
         setIsLoading(true)
@@ -70,8 +79,8 @@ export default function Preview(props) {
         }
 
         if(titleSearch.trim() !== "") {
-            setFilteredPreviewData(filterData.filter((item) => {
-                return item.title.trim().toLocaleLowerCase().includes(titleSearch.trim().toLocaleLowerCase())
+            setFilteredPreviewData(result.map(({item}) => {
+                return item
             }))
         }
     }, [titleSearch, previewData, selectedFilter, filteredGenres])
@@ -99,6 +108,7 @@ export default function Preview(props) {
                     genre
                 ]
           })
+          setTitleSearch("")
     }
 
     const PreviewGenres = (props) => {
@@ -169,6 +179,24 @@ export default function Preview(props) {
         setTitleSearch(value)
     }
 
+    const clearFilteredGenresClickHandler = (genre) => {
+            setFilteredGenres(prevFilteredGenres => {
+                return [
+                    ...prevFilteredGenres.filter((item) => {
+                    return item !== genre
+                    })
+                ]
+            })
+            setTitleSearch("")
+    }
+
+    const ClearFilteredGenres = () => {
+        return <div>{filteredGenres.map((genre) => {
+                return <h6 onClick={() => clearFilteredGenresClickHandler(genre)} className="preview--genre" key={genre}>{genre} (Clear)</h6>
+        })}
+               </div>
+    }
+
     return (
         <div>
            {!show.display
@@ -181,7 +209,7 @@ export default function Preview(props) {
                     <h2>Featured</h2>
                     <div>
                         <label htmlFor="filterPreview">Sort By: </label>
-                        <select id='filterPreview' value={selectedFilter} onChange={handleFilterSelectChange}>
+                        <select disabled={titleSearch !== ""} id='filterPreview' value={selectedFilter} onChange={handleFilterSelectChange}>
                             <option value="Default">Default</option>
                             <option value="Title (A-Z)">Title (A-Z)</option>
                             <option value="Title (Z-A)">Title (Z-A)</option>
@@ -189,19 +217,8 @@ export default function Preview(props) {
                             <option value="Date Updated (Descending)">Date Updated (Descending)</option>
                         </select>
                         <input type="text" placeholder="Search Title" value={titleSearch} onChange={handleTitleSearchChange} />
-                        {filteredGenres.length > 0 && <div>
-                                                            {filteredGenres.map((genre) => {
-                                                                return <h6 onClick={() => {
-                                                                    setFilteredGenres(prevFilteredGenres => {
-                                                                        return [
-                                                                            ...prevFilteredGenres.filter((item) => {
-                                                                                return item !== genre
-                                                                            })
-                                                                        ]
-                                                                    })
-                                                                }} className="preview--genre" key={genre}>{genre} (Clear)</h6>
-                                                            })}
-                                                      </div>}
+                        {(titleSearch.trim() !== "" && result.length === 0) && <div><h3>No results...</h3><button onClick={() => setTitleSearch("")}>Clear search</button></div>}
+                        {filteredGenres.length > 0 && <ClearFilteredGenres />}
                     </div>
                     <div className="preview--list">
                         <PreviewList />
