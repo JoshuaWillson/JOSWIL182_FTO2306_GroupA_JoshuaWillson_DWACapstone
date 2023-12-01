@@ -12,7 +12,9 @@ export default function Favourites(props) {
                     return a.episode - b.episode
                 })
             })
-        })).flat().flat()]
+        })).flat().flat().sort((a, b) => {
+            return a.season - b.season
+        })]
 
         if(selectedFilter === "Default") {
             setFilteredFavourites(orderedFavourites)
@@ -91,14 +93,14 @@ export default function Favourites(props) {
     }
 
     const FavouritesList = () => [
-        Object.entries(Object.groupBy(filteredFavourites, ({ showTitle }) => showTitle)).map(([showTitle, season]) => {
+        Object.entries(Object.groupBy(filteredFavourites, ({ showTitle }) => showTitle)).map(([showTitle, show]) => {
             return <div key={showTitle}>
                         <h2>{showTitle}</h2>
-                        {Object.entries(Object.groupBy(season, ({ seasonTitle }) => seasonTitle)).map(([seasonTitle, episode], index) => {
+                        {Object.entries(Object.groupBy(show, ({ seasonTitle }) => seasonTitle)).map(([seasonTitle, season]) => {
                             return <div key={seasonTitle}>
                                         <h3>{seasonTitle}</h3>
-                                        <img src={episode[index].image} alt="Season Image" width={50} />
-                                        {episode.map(({title, description, episode, file, image, date}) => {
+                                        <img src={season[0].image} alt="Season Image" width={50} />
+                                        {season.map(({title, description, episode, file, image, date}) => {
                                             return <div key={title}>
                                                         <h4>Episode {episode}: {title}</h4>
                                                         <h6>Added: {date}</h6>

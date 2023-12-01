@@ -14,12 +14,10 @@ export default function Preview(props) {
     const [titleSearch, setTitleSearch] = useState("")
     const [filteredGenres, setFilteredGenres] = useState([])
     const [filteredPreviewData, setFilteredPreviewData] = useState([])
-
-    const options = {
-        keys: ['title']
-      }
+    const [searchData, setSearchData] = useState([])
+    const [genreData, setGenreData] = useState([])
       
-    const fuse = new Fuse(filteredPreviewData, options)
+    const fuse = new Fuse(previewData, {keys: ['title']})
       
     const result = fuse.search(titleSearch)
 
@@ -34,38 +32,8 @@ export default function Preview(props) {
     }, [])
     
     useEffect(() => {
-        const filterData = [...previewData]
-
-        if(selectedFilter === "Default") {
-            setFilteredPreviewData(filterData)
-        }else if(selectedFilter === "Title (A-Z)") {
-            const sortedPreview = filterData.sort((a, b) => {
-                return a.title.localeCompare(b.title)
-        })
-        setFilteredPreviewData(sortedPreview)
-        }else if(selectedFilter === "Title (Z-A)") {
-            const sortedPreview = filterData.sort((a, b) => {
-                return b.title.localeCompare(a.title)
-            })
-            setFilteredPreviewData(sortedPreview)
-        }else if(selectedFilter === "Date Updated (Ascending)") {
-            const sortedPreview = filterData.sort((a, b) => {
-                const date1 = new Date(a.updated)
-                const date2 = new Date(b.updated)
-                return date1 - date2
-            })
-            setFilteredPreviewData(sortedPreview)
-        }else if(selectedFilter === "Date Updated (Descending)") {
-            const sortedPreview = filterData.sort((a, b) => {
-                const date1 = new Date(a.updated)
-                const date2 = new Date(b.updated)
-                return date2 - date1
-            })
-            setFilteredPreviewData(sortedPreview)
-        }
-
         if(filteredGenres.length > 0) {
-            setFilteredPreviewData(filterData.filter((item) => {
+            setGenreData(searchData.filter((item) => {
                 return item.genres.map((num) => {
                     return genreArray.map(({id, title}) => {
                         return num === id && title
@@ -76,14 +44,52 @@ export default function Preview(props) {
                     })
                 }).flat().flat().some((item) => item === true)
             }))
+        }else {
+            setGenreData(searchData)
         }
+    }, [filteredGenres, searchData])
 
+    useEffect(() => {
         if(titleSearch.trim() !== "") {
-            setFilteredPreviewData(result.map(({item}) => {
+            setSearchData(result.map(({item}) => {
                 return item
             }))
+        }else {
+            setSearchData(previewData)
         }
-    }, [titleSearch, previewData, selectedFilter, filteredGenres])
+    }, [titleSearch, filteredGenres, previewData])
+
+    useEffect(() => {
+        const sortData = [...genreData]
+
+        if(selectedFilter === "Default") {
+            setFilteredPreviewData(sortData)
+        }else if(selectedFilter === "Title (A-Z)") {
+            const sortedPreview = sortData.sort((a, b) => {
+                return a.title.localeCompare(b.title)
+        })
+        setFilteredPreviewData(sortedPreview)
+        }else if(selectedFilter === "Title (Z-A)") {
+            const sortedPreview = sortData.sort((a, b) => {
+                return b.title.localeCompare(a.title)
+            })
+            setFilteredPreviewData(sortedPreview)
+        }else if(selectedFilter === "Date Updated (Ascending)") {
+            const sortedPreview = sortData.sort((a, b) => {
+                const date1 = new Date(a.updated)
+                const date2 = new Date(b.updated)
+                return date1 - date2
+            })
+            setFilteredPreviewData(sortedPreview)
+        }else if(selectedFilter === "Date Updated (Descending)") {
+            const sortedPreview = sortData.sort((a, b) => {
+                const date1 = new Date(a.updated)
+                const date2 = new Date(b.updated)
+                return date2 - date1
+            })
+            setFilteredPreviewData(sortedPreview)
+        }
+    }, [genreData, selectedFilter])
 
     const showButtonClickHandler = (event, id, genres) => {
         if(event.target.className === "preview--genre") return null
@@ -108,7 +114,6 @@ export default function Preview(props) {
                     genre
                 ]
           })
-          setTitleSearch("")
     }
 
     const PreviewGenres = (props) => {
@@ -187,7 +192,6 @@ export default function Preview(props) {
                     })
                 ]
             })
-            setTitleSearch("")
     }
 
     const ClearFilteredGenres = () => {
@@ -195,6 +199,18 @@ export default function Preview(props) {
                 return <h6 onClick={() => clearFilteredGenresClickHandler(genre)} className="preview--genre" key={genre}>{genre} (Clear)</h6>
         })}
                </div>
+    }
+
+    const searchPlaceholder = () => {
+        return selectedFilter === "Default" 
+        ? "Search Title (Relevance)" 
+        : selectedFilter === "Title (A-Z)"
+        ? "Search Title (A-Z)"
+        : selectedFilter === "Title (Z-A)"
+        ? "Search Title (Z-A)"
+        : selectedFilter === "Date Updated (Ascending)"
+        ? "Search Title (Updated Asc)"
+        : "Search Title (Updated Desc)"
     }
 
     return (
@@ -209,15 +225,15 @@ export default function Preview(props) {
                     <h2>Featured</h2>
                     <div>
                         <label htmlFor="filterPreview">Sort By: </label>
-                        <select disabled={titleSearch !== ""} id='filterPreview' value={selectedFilter} onChange={handleFilterSelectChange}>
+                        <select id='filterPreview' value={selectedFilter} onChange={handleFilterSelectChange}>
                             <option value="Default">Default</option>
                             <option value="Title (A-Z)">Title (A-Z)</option>
                             <option value="Title (Z-A)">Title (Z-A)</option>
                             <option value="Date Updated (Ascending)">Date Updated (Ascending)</option>
                             <option value="Date Updated (Descending)">Date Updated (Descending)</option>
                         </select>
-                        <input type="text" placeholder="Search Title" value={titleSearch} onChange={handleTitleSearchChange} />
-                        {(titleSearch.trim() !== "" && result.length === 0) && <div><h3>No results...</h3><button onClick={() => setTitleSearch("")}>Clear search</button></div>}
+                        <input type="text" placeholder={searchPlaceholder()} value={titleSearch} onChange={handleTitleSearchChange} />
+                        {titleSearch !== "" && result.length === 0 && <div><h3>No results...</h3><button onClick={() => setTitleSearch("")}>Clear search</button></div>}
                         {filteredGenres.length > 0 && <ClearFilteredGenres />}
                     </div>
                     <div className="preview--list">

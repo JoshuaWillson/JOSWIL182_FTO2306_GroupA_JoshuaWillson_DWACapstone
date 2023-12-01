@@ -3,6 +3,10 @@ import Header from "./components/Header"
 import Preview from "./components/Preview"
 import AudioPlayer from './components/AudioPlayer'
 import Favourites from "./components/Favourites"
+import LogIn from "./components/LogIn"
+import { createClient } from '@supabase/supabase-js'
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
+const { data } = await supabase.auth.getSession()
 
 export default function App() {
   const [playingPodcast, setPlayingPodcast] = useState({
@@ -21,6 +25,7 @@ export default function App() {
     isDisplaying: false,
     episodes: []
   })
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     setFilteredPodcastsPlayed(Object.values(podcastsPlayed.reduce((acc, item) => {
@@ -29,22 +34,40 @@ export default function App() {
     }, {})))
   }, [podcastsPlayed])
 
+  useEffect(() => {
+    const {session} = data
+    setUser(session?.user.email)
+
+    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if(event === "SIGNED_IN") {
+        setUser(session?.user.email)
+      } else if(event === "SIGNED_OUT") {
+        setUser(null)
+      }
+    })
+
+    return () => {
+      subscription?.unsubscribe()
+    }
+  }, [])
+
   return (
     <>
       <div>
-        <Header setFavourites={setFavourites} />
-        {favourites.isDisplaying 
+        <Header setFavourites={setFavourites} user={user} supabase={supabase} />
+        {favourites.isDisplaying
         ? <Favourites favourites={favourites} 
                       setFavourites={setFavourites} 
                       playingPodcast={playingPodcast} 
                       setPlayingPodcast={setPlayingPodcast} 
                       setPodcastsPlayed={setPodcastsPlayed} 
           /> 
-        : <Preview setPlayingPodcast={setPlayingPodcast} 
-                   playingPodcast={playingPodcast} 
-                   setPodcastsPlayed={setPodcastsPlayed} 
-                   setFavourites={setFavourites} 
-                   favourites={favourites} />
+        : !user ? <LogIn supabase={supabase} /> 
+               : <Preview setPlayingPodcast={setPlayingPodcast} 
+                          playingPodcast={playingPodcast} 
+                          setPodcastsPlayed={setPodcastsPlayed} 
+                          setFavourites={setFavourites} 
+                          favourites={favourites} />
         }
         {playingPodcast.isDisplaying && <AudioPlayer playingPodcast={playingPodcast} setPlayingPodcast={setPlayingPodcast} setPodcastsPlayed={setPodcastsPlayed} />}
       </div>
