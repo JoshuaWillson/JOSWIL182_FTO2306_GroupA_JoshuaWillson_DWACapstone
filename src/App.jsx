@@ -7,6 +7,9 @@ import LogIn from "./components/LogIn"
 import { createClient } from '@supabase/supabase-js'
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 const { data } = await supabase.auth.getSession()
+const { data: favouritesDB } = await supabase
+  .from('favourites')
+  .select()
 
 export default function App() {
   const [playingPodcast, setPlayingPodcast] = useState({
@@ -27,6 +30,9 @@ export default function App() {
   })
   const [user, setUser] = useState(null)
 
+  // console.log(data.session.user.id)
+  // console.log(favouritesDB)
+
   useEffect(() => {
     setFilteredPodcastsPlayed(Object.values(podcastsPlayed.reduce((acc, item) => {
       acc[item.title] = item
@@ -38,12 +44,15 @@ export default function App() {
     const {session} = data
     setUser(session?.user.email)
 
-    const { subscription } = supabase.auth.onAuthStateChange((event, session) => {
+    const { subscription } = supabase.auth.onAuthStateChange( async (event, session) => {
       if(event === "SIGNED_IN") {
         setUser(session?.user.email)
+        await supabase
+        .from('favourites')
+        .upsert({ id: data.session.user.id })
       } else if(event === "SIGNED_OUT") {
         setUser(null)
-      }
+      } 
     })
 
     return () => {
