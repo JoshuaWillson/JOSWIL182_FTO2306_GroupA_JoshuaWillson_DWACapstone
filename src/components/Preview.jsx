@@ -196,7 +196,7 @@ export default function Preview(props) {
 
     const ClearFilteredGenres = () => {
         return <div>{filteredGenres.map((genre) => {
-                return <h6 onClick={() => clearFilteredGenresClickHandler(genre)} className="preview--genre" key={genre}>{genre} (Clear)</h6>
+                return <h6 className='preview--genre--clear' onClick={() => clearFilteredGenresClickHandler(genre)} key={genre}>{genre} (Clear)</h6>
         })}
                </div>
     }
@@ -223,17 +223,19 @@ export default function Preview(props) {
                     <h2>You might be interested in...</h2>
                     <PreviewSlideShow previewData={previewData} setShow={setShow} />
                     <h2>Featured</h2>
-                    <div>
-                        <label htmlFor="filterPreview">Sort By: </label>
-                        <select id='filterPreview' value={selectedFilter} onChange={handleFilterSelectChange}>
-                            <option value="Default">Default</option>
-                            <option value="Title (A-Z)">Title (A-Z)</option>
-                            <option value="Title (Z-A)">Title (Z-A)</option>
-                            <option value="Date Updated (Ascending)">Date Updated (Ascending)</option>
-                            <option value="Date Updated (Descending)">Date Updated (Descending)</option>
-                        </select>
-                        <input type="text" placeholder={searchPlaceholder()} value={titleSearch} onChange={handleTitleSearchChange} />
-                        {titleSearch !== "" && result.length === 0 && <div><h3>No results...</h3><button onClick={() => setTitleSearch("")}>Clear search</button></div>}
+                    <div className="preview--filters">
+                        <div>
+                            <label htmlFor="filterPreview">Sort By: </label>
+                            <select className="preview--select" id='filterPreview' value={selectedFilter} onChange={handleFilterSelectChange}>
+                                <option value="Default">Default</option>
+                                <option value="Title (A-Z)">Title (A-Z)</option>
+                                <option value="Title (Z-A)">Title (Z-A)</option>
+                                <option value="Date Updated (Ascending)">Date Updated (Ascending)</option>
+                                <option value="Date Updated (Descending)">Date Updated (Descending)</option>
+                            </select>
+                        </div>
+                        <input className="preview--input" type="text" placeholder={searchPlaceholder()} value={titleSearch} onChange={handleTitleSearchChange} />
+                        {titleSearch !== "" && result.length === 0 && <div className="preview-noresults"><h3>No results...</h3><button onClick={() => setTitleSearch("")}>Clear search</button></div>}
                         {filteredGenres.length > 0 && <ClearFilteredGenres />}
                     </div>
                     <div className="preview--list">

@@ -14,9 +14,9 @@ export default function Season(props) {
 
     useEffect(() => {
         setDisplaySeason(showSeasonsData.map(({season, title, episodes, image}) => {
-            return <div key={season}>
+            return <div key={season} className="season--display">
                         <h3 className="season--title">{title} ({episodes.length} Episodes)</h3>
-                        <img src={image} alt="Season Image" width={100} />
+                        <img className="season--image" src={image} alt="Season Image" />
                         <Episode episodes={episodes} 
                             image={image}
                             setPlayingPodcast={setPlayingPodcast} 
@@ -41,8 +41,8 @@ export default function Season(props) {
     }
 
     return (
-        <div>
-            <select value={selectedSeason} onChange={handleSeasonSelectChange}>
+        <div className="season--container">
+            <select className="season--select" value={selectedSeason} onChange={handleSeasonSelectChange}>
                 <SeasonSelectOptions />
             </select>
             {displaySeason}

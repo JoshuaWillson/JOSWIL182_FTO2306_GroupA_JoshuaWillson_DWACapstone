@@ -45,6 +45,13 @@ export default function AudioPlayer(props) {
           event.returnValue = true
           playingPodcast.audio.pause()
             setPlayingPodcast(prevPlayingPodcast => {
+                prevPlayingPodcast.timePlayed = Math.round(playingPodcast.audio.currentTime)
+                setPodcastsPlayed(prevPodcastsPlayed => {
+                    return [
+                            ...prevPodcastsPlayed,
+                            prevPlayingPodcast
+                    ]
+                })
                 return {
                     ...prevPlayingPodcast,
                     isPlaying: false
@@ -93,8 +100,7 @@ export default function AudioPlayer(props) {
                 ...prevPlayingPodcast,
                 isPlaying: false,
                 isDisplaying: false,
-                title: '',
-                audio: new Audio(playingPodcast.file)
+                title: ''
             }
         })
     }
@@ -110,10 +116,16 @@ export default function AudioPlayer(props) {
     return (
         <div className="audioplayer--container">
             <h4>{playingPodcast.title}</h4>
-            <img src={playingPodcast.image} alt="Playing Podcast Image" width={50} />
-            <button onClick={playPauseButtonHandler}>{playingPodcast.isPlaying ? "Pause" : "Play"}</button>
-            <button onClick={closeButtonHandler}>Close</button>
-            <h6>{formatAudioTimeStamp()}</h6>
+            <div className="audioplayer--img--btns--time">
+                <img className="audioplayer--img" src={playingPodcast.image} alt="Playing Podcast Image" />
+                <div className="audioplayer--btns--time">
+                    <div className="audioplayer--btns">
+                        <button className="audioplayer--button" onClick={playPauseButtonHandler}>{playingPodcast.isPlaying ? "Pause" : "Play"}</button>
+                        <button className="audioplayer--button" onClick={closeButtonHandler}>Close</button>
+                    </div>
+                    <h6>{formatAudioTimeStamp()}</h6>
+                </div>
+            </div>
         </div>
     )
 }

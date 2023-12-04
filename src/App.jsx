@@ -76,7 +76,7 @@ export default function App() {
   return (
     <>
       <div>
-        <Header setFavourites={setFavourites} user={user} supabase={supabase} />
+        <Header setFavourites={setFavourites} user={user} supabase={supabase} setPlayingPodcast={setPlayingPodcast} playingPodcast={playingPodcast} />
         {favourites.isDisplaying
         ? <Favourites favourites={favourites} 
                       setFavourites={setFavourites} 

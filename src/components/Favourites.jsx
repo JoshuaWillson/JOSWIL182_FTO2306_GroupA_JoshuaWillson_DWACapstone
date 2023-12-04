@@ -105,18 +105,20 @@ export default function Favourites(props) {
     const FavouritesList = () => [
         Object.entries(Object.groupBy(filteredFavourites, ({ showTitle }) => showTitle)).map(([showTitle, show]) => {
             return <div key={showTitle}>
-                        <h2>{showTitle}</h2>
+                        <h2 className='favourites--show--title'>{showTitle}</h2>
                         {Object.entries(Object.groupBy(show, ({ seasonTitle }) => seasonTitle)).map(([seasonTitle, season]) => {
                             return <div key={seasonTitle}>
-                                        <h3>{seasonTitle}</h3>
-                                        <img src={season[0].image} alt="Season Image" width={50} />
+                                        <div className='favourites--season--title--img'>
+                                            <h3>{seasonTitle}</h3>
+                                            <img className='favourites--img' src={season[0].image} alt="Season Image" />
+                                        </div>
                                         {season.map(({title, description, episode, file, image, date}) => {
-                                            return <div key={title}>
+                                            return <div key={title} className='favourites--episode'>
                                                         <h4>Episode {episode}: {title}</h4>
                                                         <h6>Added: {date}</h6>
-                                                        <button onClick={() => removeButtonHandler(title)}>Remove</button>
+                                                        <button className='favourites--episode--button' onClick={() => removeButtonHandler(title)}>Remove</button>
                                                         <h5>{description}</h5>
-                                                        <button onClick={() => playButtonHandler(title, file, image)}>Play</button>
+                                                        <button className='favourites--episode--button' onClick={() => playButtonHandler(title, file, image)}>Play</button>
                                                     </div>
                                         })}
                                    </div>
@@ -142,19 +144,21 @@ export default function Favourites(props) {
     return (
         <div>
             {favourites.episodes.length > 0 
-            ? <div>
+            ? <div className='favourites--container'>
                 <h1>Favourites</h1>
-                <label htmlFor="filterFavourites">Sort By: </label>
-                <select id='filterFavourites' value={selectedFilter} onChange={handleFilterSelectChange}>
-                    <option value="Default">Default</option>
-                    <option value="Show Title (A-Z)">Show Title (A-Z)</option>
-                    <option value="Show Title (Z-A)">Show Title (Z-A)</option>
-                    <option value="Date Updated (Ascending)">Date Updated (Ascending)</option>
-                    <option value="Date Updated (Descending)">Date Updated (Descending)</option>
-                </select>
+                <div className='favourites--label--select'>
+                    <label htmlFor="filterFavourites">Sort By:</label>
+                    <select className='favourites--select' id='filterFavourites' value={selectedFilter} onChange={handleFilterSelectChange}>
+                        <option value="Default">Default</option>
+                        <option value="Show Title (A-Z)">Show Title (A-Z)</option>
+                        <option value="Show Title (Z-A)">Show Title (Z-A)</option>
+                        <option value="Date Updated (Ascending)">Date Updated (Ascending)</option>
+                        <option value="Date Updated (Descending)">Date Updated (Descending)</option>
+                    </select>
+                </div>
                 <FavouritesList /> 
               </div> 
-            : <div>
+            : <div className='favourites--nofavourites'>
                 <h1>No favourites at the moment...</h1>
                 <button onClick={backToHomeButtonHandler}>Back to home</button>
               </div>

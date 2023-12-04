@@ -40,8 +40,7 @@ export default function Episode(props) {
                 }
             }else {
                 return {
-                    ...prevPlayingPodcast,
-                    isDisplaying: true,
+                    ...prevPlayingPodcast
                 }
             }
         })
@@ -88,12 +87,12 @@ export default function Episode(props) {
 
     const EpisodeList = () => [
         episodes.map(({title, description, episode, file}) => {
-        return <div key={episode}>
+        return <div key={episode} className="episode--container">
                     <h4>Episode {episode}: {title}</h4>
-                    <button onClick={() => favouriteButtonHandler(title, description, episode, file)}>{favourites.episodes.some((item) => item.title === title) 
+                    <button className="episode--button" onClick={() => favouriteButtonHandler(title, description, episode, file)}>{favourites.episodes.some((item) => item.title === title) 
                     ? "Unfavourite" : "Favourite"}</button>
                     <h5>{description}</h5>
-                    <button onClick={() => playButtonHandler(title, file)}>{playingPodcast.title === title ? 'Playing...' : 'Play'}</button>
+                    <button className="episode--button" onClick={() => playButtonHandler(title, file)}>{playingPodcast.title === title ? 'Playing...' : 'Play'}</button>
                </div>
     })]
     

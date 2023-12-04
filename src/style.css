@@ -47,7 +47,7 @@ button:disabled {
 .header--container {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     position: sticky;
     top: 0;
     background-color: var(--steel-blue);
@@ -57,6 +57,45 @@ button:disabled {
 
 .header--img {
     width: 50px;
+}
+
+.header--img--heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header--home--favourites {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header--email--signout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header--signout {
+    background-color: var(--ultra-violet);
+}
+
+.header--email {
+    margin-bottom: 0.5rem;
+}
+
+.header--home {
+    background-color: var(--ultra-violet);
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.header--favs {
+    background-color: var(--ultra-violet);
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 /* Preview */
@@ -202,6 +241,65 @@ button:disabled {
     font-size: larger;
 }
 
+.preview--filters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.preview--select {
+    margin-left: 0.3rem;
+    background-color: var(--steel-blue);
+    border-radius: 5px;
+    border: 1px solid var(--grey);
+    color: var(--grey);
+}
+
+.preview--select:focus {
+    outline: var(--grey);
+}
+
+.preview--input {
+    background-color: var(--steel-blue);
+    border-radius: 5px;
+    border: 1px solid var(--grey);
+    color: var(--grey);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.preview--input::placeholder {
+    color: var(--grey);
+}
+
+.preview--input:focus {
+    outline: var(--grey);
+}
+
+.preview-noresults {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.preview--genre--clear {
+    background-color: var(--steel-blue);
+    font-size: xx-small;
+    border-radius: 0.5rem;
+    padding: 5px;
+    text-align: center;
+    display: inline-block;
+    margin-right: 0.3rem;
+    margin-left: 0.3rem;
+}
+
+.preview--genre--clear:hover {
+    cursor: pointer;
+    outline: 1px solid var(--grey);
+}
+
 /* Show */
 .show--container {
     display: flex;
@@ -211,6 +309,7 @@ button:disabled {
 
 .show--img {
     width: 500px;
+    border-radius: 10px;
 }
 
 .show--back--button {
@@ -225,9 +324,63 @@ button:disabled {
     top: 6rem;
 }
 
+.show--desc {
+    max-width: 50rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.show--genre {
+    margin-top: -0.5rem;
+    background-color: var(--steel-blue);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
 /* Season */
+.season--container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.season--display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.season--image {
+    width: 100px;
+    border-radius: 5px;
+}
+
+.season--select {
+    background-color: var(--steel-blue);
+    border-radius: 5px;
+    border: 1px solid var(--grey);
+    color: var(--grey);
+}
+
+.season--select:focus {
+    outline: var(--grey);
+}
 
 /* Episode */
+.episode--container {
+    background-color: var(--steel-blue);
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    border-radius: 5px;
+    padding: 0.5rem;
+    border: 1px solid var(--grey);
+}
+
+.episode--button {
+    background-color: var(--ultra-violet);
+}
 
 /* PreviewSlideShow */
 .previewslideshow--container {
@@ -279,7 +432,36 @@ button:disabled {
     transform: translate(-50%, -50%);
     background-color: #4A7B9D;
     border-radius: 10px;
-    padding: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--grey);
+}
+
+.audioplayer--img {
+    width: 50px;
+    border-radius: 5px;
+    margin-bottom: 1.8rem;
+}
+
+.audioplayer--button {
+    background-color: var(--ultra-violet);
+    margin-left: 5px;
+}
+
+.audioplayer--img--btns--time {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.audioplayer--btns--time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.audioplayer--btns {
+    display: flex;
+    align-items: center;
 }
 
 /* LogIn */
@@ -290,4 +472,64 @@ button:disabled {
     border-radius: 5%;
     padding: 1rem;
     margin-top: 16rem;
+}
+
+/* Favourites */
+.favourites--nofavourites {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.favourites--container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.favourites--show--title {
+    text-align: center;
+}
+
+.favourites--season--title--img {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.favourites--img {
+    width: 80px;
+    border-radius: 5px;
+}
+
+.favourites--episode {
+    background-color: var(--steel-blue);
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    border-radius: 5px;
+    padding: 0.5rem;
+    border: 1px solid var(--grey);
+}
+
+.favourites--episode--button {
+    background-color: var(--ultra-violet); 
+}
+
+.favourites--label--select {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.favourites--select {
+    margin-left: 0.5rem;
+    background-color: var(--steel-blue);
+    border-radius: 5px;
+    border: 1px solid var(--grey);
+    color: var(--grey);
+}
+
+.favourites--select:focus {
+    outline: var(--grey);
 }

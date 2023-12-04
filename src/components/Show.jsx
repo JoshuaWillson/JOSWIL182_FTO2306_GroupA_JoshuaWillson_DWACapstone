@@ -31,7 +31,7 @@ export default function Show(props) {
     const ShowGenres = () => {
         return genres.map((num) => {
             return genreArray.map(({id, title}) => {
-                return num === id && <h4 key={id}>{title}</h4>
+                return num === id && <h4 className="show--genre" key={id}>{title}</h4>
             })
         })
     }
@@ -59,7 +59,7 @@ export default function Show(props) {
                 <button className="show--back--button" onClick={showBackButtonClickHandler}>Back</button>
                 <img className="show--img" src={showData.image} alt="Show Image" />
                 <h1>{showData.title}</h1>
-                <h2>{showData.description}</h2>
+                <h2 className="show--desc">{showData.description}</h2>
                 <ShowGenres />
                 <ShowUpdated updated={showData.updated} />
                 <h2>Seasons: {showSeasonsData.length}</h2>
