@@ -36,12 +36,12 @@ export default function Episode(props) {
                     image: image,
                     title: title,
                     audio: new Audio(file),
+                    isNewAudio: true
                 }
             }else {
                 return {
                     ...prevPlayingPodcast,
                     isDisplaying: true,
-                    isPlaying: true,
                 }
             }
         })
@@ -49,7 +49,7 @@ export default function Episode(props) {
 
     const getDateTime = () => {
         const date = new Date()
-        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
     }
 
     const favouriteButtonHandler = (title, description, episode, file) => {
@@ -93,7 +93,7 @@ export default function Episode(props) {
                     <button onClick={() => favouriteButtonHandler(title, description, episode, file)}>{favourites.episodes.some((item) => item.title === title) 
                     ? "Unfavourite" : "Favourite"}</button>
                     <h5>{description}</h5>
-                    <button onClick={() => playButtonHandler(title, file)}>Play</button>
+                    <button onClick={() => playButtonHandler(title, file)}>{playingPodcast.title === title ? 'Playing...' : 'Play'}</button>
                </div>
     })]
     

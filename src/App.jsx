@@ -20,19 +20,11 @@ export default function App() {
     timePlayed: 0
   })
   const [podcastsPlayed, setPodcastsPlayed] = useState([])
-  const [filteredPodcastsPlayed, setFilteredPodcastsPlayed] = useState([])
   const [favourites, setFavourites] = useState({
     isDisplaying: false,
     episodes: []
   })
   const [user, setUser] = useState({email: null, id: null})
-
-  useEffect(() => {
-    setFilteredPodcastsPlayed(Object.values(podcastsPlayed.reduce((acc, item) => {
-      acc[item.title] = item
-      return acc
-    }, {})))
-  }, [podcastsPlayed])
 
   useEffect(() => {
     const {session} = data
