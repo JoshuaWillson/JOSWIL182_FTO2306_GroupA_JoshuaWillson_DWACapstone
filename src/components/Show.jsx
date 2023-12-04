@@ -3,7 +3,7 @@ import { genreArray } from "../genre-data";
 import Season from "./Season";
 
 export default function Show(props) {
-    const {id, genres, setShow, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites} = props;
+    const {id, genres, setShow, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, supabase, user} = props;
     const [showData, setshowData] = useState({});
     const [showSeasonsData, setShowSeasonsData] = useState([])
     const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +71,8 @@ export default function Show(props) {
                         favourites={favourites}
                         showTitle={showData.title}
                         showUpdated={showData.updated}
+                        supabase={supabase}
+                        user={user}
                 />
               </div>}
         </div>

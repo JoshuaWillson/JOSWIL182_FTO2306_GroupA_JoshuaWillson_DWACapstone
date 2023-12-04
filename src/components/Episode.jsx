@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 
 export default function Episode(props) {
-    const {episodes, image, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, showTitle, season, seasonTitle, showUpdated} = props
+    const {episodes, image, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, showTitle, season, seasonTitle, showUpdated, supabase, user} = props
+
+    useEffect(() => {
+        async function updateFavouritesDB() {
+            await supabase
+            .from('favourites')
+            .update({ favourites: favourites.episodes })
+            .eq('id', user.id)
+        }
+        updateFavouritesDB()
+      }, [favourites])
 
     const playButtonHandler = (title, file) => {
         setPlayingPodcast(prevPlayingPodcast => {

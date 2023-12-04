@@ -5,7 +5,7 @@ import PreviewSlideShow from "./PreviewSlideShow";
 import Fuse from 'fuse.js'
 
 export default function Preview(props) {
-    const {setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites} = props;
+    const {setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, supabase, user} = props;
     const [previewData, setPreviewData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [endSlice, setEndSlice] = useState({value: 8, stepAmount: 8});
@@ -253,6 +253,8 @@ export default function Preview(props) {
                     setPodcastsPlayed={setPodcastsPlayed}
                     setFavourites={setFavourites}
                     favourites={favourites}
+                    supabase={supabase}
+                    user={user}
               />
             }
         </div>

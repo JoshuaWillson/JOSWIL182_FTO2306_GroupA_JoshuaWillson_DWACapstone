@@ -7,9 +7,6 @@ import LogIn from "./components/LogIn"
 import { createClient } from '@supabase/supabase-js'
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
 const { data } = await supabase.auth.getSession()
-const { data: favouritesDB } = await supabase
-  .from('favourites')
-  .select()
 
 export default function App() {
   const [playingPodcast, setPlayingPodcast] = useState({
@@ -28,10 +25,7 @@ export default function App() {
     isDisplaying: false,
     episodes: []
   })
-  const [user, setUser] = useState(null)
-
-  // console.log(data.session.user.id)
-  // console.log(favouritesDB)
+  const [user, setUser] = useState({email: null, id: null})
 
   useEffect(() => {
     setFilteredPodcastsPlayed(Object.values(podcastsPlayed.reduce((acc, item) => {
@@ -42,23 +36,50 @@ export default function App() {
 
   useEffect(() => {
     const {session} = data
-    setUser(session?.user.email)
+
+    setUser(prevUser => {
+      return {
+        ...prevUser,
+        email: session?.user.email,
+        id: session?.user.id
+      }
+    })
 
     const { subscription } = supabase.auth.onAuthStateChange( async (event, session) => {
       if(event === "SIGNED_IN") {
-        setUser(session?.user.email)
-        await supabase
-        .from('favourites')
-        .upsert({ id: data.session.user.id })
+        setUser(prevUser => {
+          return {
+            ...prevUser,
+            email: session?.user.email,
+            id: session?.user.id
+          }
+        })
       } else if(event === "SIGNED_OUT") {
-        setUser(null)
-      } 
+        setUser(prevUser => {
+          return {
+            ...prevUser,
+            email: null,
+            id: null
+          }
+        })
+      }
     })
 
     return () => {
       subscription?.unsubscribe()
     }
   }, [])
+
+  useEffect(() => {
+    if(user.email && user.id) {
+      async function insertFirstTimeUserFavouritesDB() {
+        await supabase
+          .from('favourites')
+          .upsert({ id: user.id })
+      }
+      insertFirstTimeUserFavouritesDB()
+    }
+  }, [user])
 
   return (
     <>
@@ -69,14 +90,18 @@ export default function App() {
                       setFavourites={setFavourites} 
                       playingPodcast={playingPodcast} 
                       setPlayingPodcast={setPlayingPodcast} 
-                      setPodcastsPlayed={setPodcastsPlayed} 
+                      setPodcastsPlayed={setPodcastsPlayed}
+                      supabase={supabase}
+                      user={user}
           /> 
-        : !user ? <LogIn supabase={supabase} /> 
+        : !(user.email && user.id) ? <LogIn supabase={supabase} /> 
                : <Preview setPlayingPodcast={setPlayingPodcast} 
                           playingPodcast={playingPodcast} 
                           setPodcastsPlayed={setPodcastsPlayed} 
                           setFavourites={setFavourites} 
-                          favourites={favourites} />
+                          favourites={favourites} 
+                          supabase={supabase}
+                          user={user} />
         }
         {playingPodcast.isDisplaying && <AudioPlayer playingPodcast={playingPodcast} setPlayingPodcast={setPlayingPodcast} setPodcastsPlayed={setPodcastsPlayed} />}
       </div>

@@ -1,9 +1,19 @@
 import {useEffect, useState} from 'react'
 
 export default function Favourites(props) {
-    const {favourites, setFavourites, playingPodcast, setPlayingPodcast, setPodcastsPlayed} = props
+    const {favourites, setFavourites, playingPodcast, setPlayingPodcast, setPodcastsPlayed, supabase, user} = props
     const [filteredFavourites, setFilteredFavourites] = useState([])
     const [selectedFilter, setSelectedFilter] = useState("Default")
+
+    useEffect(() => {
+        async function updateFavouritesDB() {
+            await supabase
+            .from('favourites')
+            .update({ favourites: favourites.episodes })
+            .eq('id', user.id)
+        }
+        updateFavouritesDB()
+      }, [favourites])
 
     useEffect(() => {
         const orderedFavourites = [...(Object.values(Object.groupBy(favourites.episodes, ({ showTitle }) => showTitle)).map((show) => {

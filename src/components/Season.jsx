@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Episode from "./Episode";
 
 export default function Season(props) {
-    const {showSeasonsData, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, showTitle, showUpdated} = props 
+    const {showSeasonsData, setPlayingPodcast, playingPodcast, setPodcastsPlayed, setFavourites, favourites, showTitle, showUpdated, supabase, user} = props 
     const [selectedSeason, setSelectedSeason] = useState(1)
     const [displaySeason, setDisplaySeason] = useState()
 
@@ -28,6 +28,8 @@ export default function Season(props) {
                             season={season}
                             seasonTitle={title}
                             showUpdated={showUpdated}
+                            supabase={supabase}
+                            user={user}
                         />
                   </div>
         })[selectedSeason - 1])
