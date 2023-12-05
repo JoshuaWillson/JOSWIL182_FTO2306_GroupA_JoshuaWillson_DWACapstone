@@ -6,7 +6,6 @@ import Favourites from "./components/Favourites"
 import LogIn from "./components/LogIn"
 import { createClient } from '@supabase/supabase-js'
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
-const { data } = await supabase.auth.getSession()
 
 export default function App() {
   const [playingPodcast, setPlayingPodcast] = useState({
@@ -27,15 +26,19 @@ export default function App() {
   const [user, setUser] = useState({email: null, id: null})
 
   useEffect(() => {
-    const {session} = data
-
-    setUser(prevUser => {
-      return {
-        ...prevUser,
-        email: session?.user.email,
-        id: session?.user.id
-      }
-    })
+    const configureCurrentUser = async () => {
+      const { data } = await supabase.auth.getSession()
+      const {session} = data
+      
+      setUser(prevUser => {
+        return {
+          ...prevUser,
+          email: session?.user.email,
+          id: session?.user.id
+        }
+      })
+    }
+    configureCurrentUser()
 
     const { subscription } = supabase.auth.onAuthStateChange( async (event, session) => {
       if(event === "SIGNED_IN") {

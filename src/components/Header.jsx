@@ -27,15 +27,17 @@ export default function Header(props) {
                 isDisplaying: false
             }
         })
-        playingPodcast.audio.pause()
-        setPlayingPodcast(prevPlayingPodcast => {
-            return {
-                ...prevPlayingPodcast,
-                isDisplaying: false,
-                isPlaying: false,
-                title: ''
-            }
-        })
+        if(playingPodcast.isDisplaying) {
+            playingPodcast.audio.pause()
+            setPlayingPodcast(prevPlayingPodcast => {
+                return {
+                    ...prevPlayingPodcast,
+                    isDisplaying: false,
+                    isPlaying: false,
+                    title: ''
+                }
+            })
+        }
     }
 
     return (
@@ -45,7 +47,7 @@ export default function Header(props) {
                         <button className="header--favs" onClick={() => navButtonHandler("favourites")}>Favourites</button>
                      </div>}
             <div className="header--img--heading">
-                <img className="header--img" src="../src/images/microphone.png" alt="Microphone Image" />
+                <img className="header--img" src="/microphone.png" alt="Microphone Image" />
                 <h1 className="header--heading">The Podcast App</h1>
             </div>
             {(user.email && user.id) && <div className="header--email--signout">
